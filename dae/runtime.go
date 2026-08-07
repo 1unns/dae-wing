@@ -108,3 +108,17 @@ func GetRuntimeOverview(windowSec int, maxPoints int) (*RuntimeOverview, error) 
 		ConnTraffics:      connTraffics,
 	}, nil
 }
+
+func ClearTrafficStats() error {
+	ctl, err := ControlPlane()
+	if err != nil {
+		if errors.Is(err, ErrControlPlaneNotInit) {
+			return nil
+		}
+		return err
+	}
+	if ctl != nil {
+		return ctl.ClearTrafficMaps()
+	}
+	return nil
+}
