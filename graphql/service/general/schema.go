@@ -48,6 +48,8 @@ type RuntimeOverview {
 }
 type DeviceTraffic {
   ip: String!
+  mac: String!
+  name: String!
   proxyUploadTotal: String!
   proxyDownloadTotal: String!
   directUploadTotal: String!
