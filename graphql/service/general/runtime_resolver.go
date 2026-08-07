@@ -131,6 +131,18 @@ func (r *DeviceTrafficResolver) DirectDownloadTotal() string {
 	return strconv.FormatUint(r.Device.DirectDownloadTotal, 10)
 }
 
+func (r *ConnTrafficResolver) SrcIp() string {
+	return r.Conn.SrcIP
+}
+
+func (r *ConnTrafficResolver) DstIp() string {
+	return r.Conn.DstIP
+}
+
+func (r *ConnTrafficResolver) DstPort() int32 {
+	return int32(r.Conn.DstPort)
+}
+
 func (r *ConnTrafficResolver) Id() graphql.ID {
 	return graphql.ID(r.Conn.SrcIP + "-" + r.Conn.DstIP + "-" + strconv.Itoa(int(r.Conn.DstPort)))
 }
