@@ -144,7 +144,7 @@ func (r *ConnTrafficResolver) DstPort() int32 {
 }
 
 func (r *ConnTrafficResolver) Id() graphql.ID {
-	return graphql.ID(r.Conn.SrcIP + "-" + r.Conn.DstIP + "-" + strconv.Itoa(int(r.Conn.DstPort)))
+	return graphql.ID(fmt.Sprintf("%s:%d-%s:%d", r.Conn.SrcIP, r.Conn.SrcPort, r.Conn.DstIP, r.Conn.DstPort))
 }
 
 func (r *ConnTrafficResolver) Domain() string {
