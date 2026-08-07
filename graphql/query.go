@@ -138,6 +138,30 @@ func (r *queryResolver) User(ctx context.Context) (*user.Resolver, error) {
 	return &user.Resolver{User: u}, nil
 }
 
+func (r *queryResolver) DeviceTraffic(ctx context.Context) ([]*general.DeviceTrafficResolver, error) {
+	overview, err := dae.GetRuntimeOverview(0, 0)
+	if err != nil {
+		return nil, err
+	}
+	resolvers := make([]*general.DeviceTrafficResolver, 0, len(overview.DeviceTraffics))
+	for _, dt := range overview.DeviceTraffics {
+		resolvers = append(resolvers, &general.DeviceTrafficResolver{Device: dt})
+	}
+	return resolvers, nil
+}
+
+func (r *queryResolver) ConnectionTraffic(ctx context.Context) ([]*general.ConnTrafficResolver, error) {
+	overview, err := dae.GetRuntimeOverview(0, 0)
+	if err != nil {
+		return nil, err
+	}
+	resolvers := make([]*general.ConnTrafficResolver, 0, len(overview.ConnTraffics))
+	for _, ct := range overview.ConnTraffics {
+		resolvers = append(resolvers, &general.ConnTrafficResolver{Conn: ct})
+	}
+	return resolvers, nil
+}
+
 func (r *queryResolver) General() (*general.Resolver, error) {
 	schema, err := SchemaString()
 	if err != nil {

@@ -18,6 +18,20 @@ type RuntimeTrafficSample struct {
 	DownloadRate uint64
 }
 
+type DeviceTraffic struct {
+	IP            string
+	UploadTotal   uint64
+	DownloadTotal uint64
+}
+
+type ConnTraffic struct {
+	SrcIP         string
+	DstIP         string
+	DstPort       uint16
+	UploadTotal   uint64
+	DownloadTotal uint64
+}
+
 type RuntimeOverview struct {
 	UpdatedAt         time.Time
 	UploadRate        uint64
@@ -27,6 +41,8 @@ type RuntimeOverview struct {
 	ActiveConnections int
 	UDPSessions       int
 	Samples           []RuntimeTrafficSample
+	DeviceTraffics    []DeviceTraffic
+	ConnTraffics      []ConnTraffic
 }
 
 func GetRuntimeOverview(windowSec int, maxPoints int) (*RuntimeOverview, error) {
@@ -51,6 +67,26 @@ func GetRuntimeOverview(windowSec int, maxPoints int) (*RuntimeOverview, error) 
 		})
 	}
 
+	deviceTraffics := make([]DeviceTraffic, 0, len(snapshot.DeviceTraffics))
+	for _, dt := range snapshot.DeviceTraffics {
+		deviceTraffics = append(deviceTraffics, DeviceTraffic{
+			IP:            dt.IP,
+			UploadTotal:   dt.UploadTotal,
+			DownloadTotal: dt.DownloadTotal,
+		})
+	}
+
+	connTraffics := make([]ConnTraffic, 0, len(snapshot.ConnTraffics))
+	for _, ct := range snapshot.ConnTraffics {
+		connTraffics = append(connTraffics, ConnTraffic{
+			SrcIP:         ct.SrcIP,
+			DstIP:         ct.DstIP,
+			DstPort:       ct.DstPort,
+			UploadTotal:   ct.UploadTotal,
+			DownloadTotal: ct.DownloadTotal,
+		})
+	}
+
 	return &RuntimeOverview{
 		UpdatedAt:         snapshot.UpdatedAt,
 		UploadRate:        snapshot.UploadRate,
@@ -60,5 +96,7 @@ func GetRuntimeOverview(windowSec int, maxPoints int) (*RuntimeOverview, error) 
 		ActiveConnections: snapshot.ActiveConnections,
 		UDPSessions:       snapshot.UDPSessions,
 		Samples:           samples,
+		DeviceTraffics:    deviceTraffics,
+		ConnTraffics:      connTraffics,
 	}, nil
 }

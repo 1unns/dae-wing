@@ -42,6 +42,27 @@ type Query {
 	nodes(id: ID, subscriptionId: ID, first: Int, after: ID): NodesConnection! @hasRole(role: ADMIN)
 	nodeLatencies(ids: [ID!]): [NodeLatency!]! @hasRole(role: ADMIN)
 	general: General! @hasRole(role: ADMIN)
+	deviceTraffic: [DeviceTraffic!]! @hasRole(role: ADMIN)
+	connectionTraffic: [ConnectionTraffic!]! @hasRole(role: ADMIN)
+}
+
+type DeviceTraffic {
+	ip: String!
+	mac: String!
+	name: String!
+	proxyUploadTotal: String!
+	proxyDownloadTotal: String!
+	directUploadTotal: String!
+	directDownloadTotal: String!
+}
+
+type ConnectionTraffic {
+	id: ID!
+	domain: String!
+	ip: String!
+	uploadTotal: String!
+	downloadTotal: String!
+	state: String!
 }
 type Mutation {
 	# createUser creates a user if there is no user.

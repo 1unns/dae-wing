@@ -20,6 +20,14 @@ type RuntimeTrafficSampleResolver struct {
 	Sample dae.RuntimeTrafficSample
 }
 
+type DeviceTrafficResolver struct {
+	Device dae.DeviceTraffic
+}
+
+type ConnTrafficResolver struct {
+	Conn dae.ConnTraffic
+}
+
 func (r *Resolver) RuntimeOverview(args *struct {
 	WindowSec int32
 	MaxPoints int32
@@ -77,4 +85,56 @@ func (r *RuntimeTrafficSampleResolver) UploadRate() float64 {
 
 func (r *RuntimeTrafficSampleResolver) DownloadRate() float64 {
 	return float64(r.Sample.DownloadRate)
+}
+
+func (r *DeviceTrafficResolver) Ip() string {
+	return r.Device.IP
+}
+
+func (r *DeviceTrafficResolver) Mac() string {
+	return ""
+}
+
+func (r *DeviceTrafficResolver) Name() string {
+	return ""
+}
+
+func (r *DeviceTrafficResolver) ProxyUploadTotal() string {
+	return strconv.FormatUint(r.Device.UploadTotal, 10)
+}
+
+func (r *DeviceTrafficResolver) ProxyDownloadTotal() string {
+	return strconv.FormatUint(r.Device.DownloadTotal, 10)
+}
+
+func (r *DeviceTrafficResolver) DirectUploadTotal() string {
+	return "0"
+}
+
+func (r *DeviceTrafficResolver) DirectDownloadTotal() string {
+	return "0"
+}
+
+func (r *ConnTrafficResolver) Id() graphql.ID {
+	return graphql.ID(r.Conn.SrcIP + "-" + r.Conn.DstIP + "-" + strconv.Itoa(int(r.Conn.DstPort)))
+}
+
+func (r *ConnTrafficResolver) Domain() string {
+	return ""
+}
+
+func (r *ConnTrafficResolver) Ip() string {
+	return r.Conn.DstIP
+}
+
+func (r *ConnTrafficResolver) UploadTotal() string {
+	return strconv.FormatUint(r.Conn.UploadTotal, 10)
+}
+
+func (r *ConnTrafficResolver) DownloadTotal() string {
+	return strconv.FormatUint(r.Conn.DownloadTotal, 10)
+}
+
+func (r *ConnTrafficResolver) State() string {
+	return "ESTABLISHED"
 }
