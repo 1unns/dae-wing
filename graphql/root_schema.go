@@ -65,6 +65,7 @@ type ConnectionTraffic {
 	state: String!
 }
 type Mutation {
+	clearTrafficStats: Boolean! @hasRole(role: ADMIN)
 	# createUser creates a user if there is no user.
 	createUser(username: String!, password: String!): String!
 	# createConfig creates a global config. Null arguments will be converted to default value.

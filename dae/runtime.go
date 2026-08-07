@@ -19,9 +19,11 @@ type RuntimeTrafficSample struct {
 }
 
 type DeviceTraffic struct {
-	IP            string
-	UploadTotal   uint64
-	DownloadTotal uint64
+	IP                  string
+	ProxyUploadTotal    uint64
+	ProxyDownloadTotal  uint64
+	DirectUploadTotal   uint64
+	DirectDownloadTotal uint64
 }
 
 type ConnTraffic struct {
@@ -74,9 +76,11 @@ func GetRuntimeOverview(windowSec int, maxPoints int) (*RuntimeOverview, error) 
 	deviceTraffics := make([]DeviceTraffic, 0, len(snapshot.DeviceTraffics))
 	for _, dt := range snapshot.DeviceTraffics {
 		deviceTraffics = append(deviceTraffics, DeviceTraffic{
-			IP:            dt.IP,
-			UploadTotal:   dt.UploadTotal,
-			DownloadTotal: dt.DownloadTotal,
+			IP:                  dt.IP,
+			ProxyUploadTotal:    dt.ProxyUploadTotal,
+			ProxyDownloadTotal:  dt.ProxyDownloadTotal,
+			DirectUploadTotal:   dt.DirectUploadTotal,
+			DirectDownloadTotal: dt.DirectDownloadTotal,
 		})
 	}
 

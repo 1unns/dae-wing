@@ -31,6 +31,13 @@ import (
 
 type MutationResolver struct{}
 
+func (r *MutationResolver) ClearTrafficStats(ctx context.Context) (bool, error) {
+	if err := core.ClearTrafficMaps(); err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 func (r *MutationResolver) CreateUser(args *struct {
 	Username string
 	Password string

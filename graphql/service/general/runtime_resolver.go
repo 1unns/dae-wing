@@ -75,6 +75,22 @@ func (r *RuntimeOverviewResolver) Samples() []*RuntimeTrafficSampleResolver {
 	return resolvers
 }
 
+func (r *RuntimeOverviewResolver) DeviceTraffics() []*DeviceTrafficResolver {
+	resolvers := make([]*DeviceTrafficResolver, 0, len(r.Overview.DeviceTraffics))
+	for _, dt := range r.Overview.DeviceTraffics {
+		resolvers = append(resolvers, &DeviceTrafficResolver{Device: dt})
+	}
+	return resolvers
+}
+
+func (r *RuntimeOverviewResolver) ConnTraffics() []*ConnTrafficResolver {
+	resolvers := make([]*ConnTrafficResolver, 0, len(r.Overview.ConnTraffics))
+	for _, ct := range r.Overview.ConnTraffics {
+		resolvers = append(resolvers, &ConnTrafficResolver{Conn: ct})
+	}
+	return resolvers
+}
+
 func (r *RuntimeTrafficSampleResolver) Timestamp() graphql.Time {
 	return graphql.Time{Time: r.Sample.Timestamp}
 }
@@ -100,19 +116,19 @@ func (r *DeviceTrafficResolver) Name() string {
 }
 
 func (r *DeviceTrafficResolver) ProxyUploadTotal() string {
-	return strconv.FormatUint(r.Device.UploadTotal, 10)
+	return strconv.FormatUint(r.Device.ProxyUploadTotal, 10)
 }
 
 func (r *DeviceTrafficResolver) ProxyDownloadTotal() string {
-	return strconv.FormatUint(r.Device.DownloadTotal, 10)
+	return strconv.FormatUint(r.Device.ProxyDownloadTotal, 10)
 }
 
 func (r *DeviceTrafficResolver) DirectUploadTotal() string {
-	return "0"
+	return strconv.FormatUint(r.Device.DirectUploadTotal, 10)
 }
 
 func (r *DeviceTrafficResolver) DirectDownloadTotal() string {
-	return "0"
+	return strconv.FormatUint(r.Device.DirectDownloadTotal, 10)
 }
 
 func (r *ConnTrafficResolver) Id() graphql.ID {
