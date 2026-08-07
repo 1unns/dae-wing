@@ -114,7 +114,7 @@ func WaitForNetwork(log *logrus.Logger) {
 		Timeout: epo,
 	}
 	log.Infoln("Waiting for network...")
-	for i := 0; ; i++ {
+	for i := 0; i < 6; i++ { // Maximum 6 retries (30 seconds)
 		resp, err := client.Get(cmd.CheckNetworkLinks[i%len(cmd.CheckNetworkLinks)])
 		if err != nil {
 			log.Debugln("CheckNetwork:", err)
@@ -128,10 +128,11 @@ func WaitForNetwork(log *logrus.Logger) {
 		}
 		resp.Body.Close()
 		if resp.StatusCode >= 200 && resp.StatusCode < 500 {
-			break
+			log.Infoln("Network online.")
+			return
 		}
 		log.Infof("Bad status: %v (%v)", resp.Status, resp.StatusCode)
 		time.Sleep(epo)
 	}
-	log.Infoln("Network online.")
+	log.Warnln("Network still offline after waiting, proceeding anyway...")
 }
