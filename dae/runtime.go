@@ -46,17 +46,21 @@ type RuntimeOverview struct {
 }
 
 func GetRuntimeOverview(windowSec int, maxPoints int) (*RuntimeOverview, error) {
-	activeTCPConnections := 0
 	ctl, err := ControlPlane()
-	if err != nil {
-		if !errors.Is(err, ErrControlPlaneNotInit) {
-			return nil, err
-		}
-	} else {
-		activeTCPConnections = ctl.ActiveTCPConnections()
+	if err != nil && !errors.Is(err, ErrControlPlaneNotInit) {
+		return nil, err
 	}
 
-	snapshot := control.SnapshotRuntimeStats(activeTCPConnections, control.DefaultUdpEndpointPool.Count(), windowSec, maxPoints)
+	// Use ctl.SnapshotRuntimeStats() so it reads from the correct ControlPlane
+	// runtimeStats store (which records actual proxy traffic) and eBPF maps.
+	// When ControlPlane is not yet initialized, fall back to the global store.
+	var snapshot control.RuntimeStatsSnapshot
+	if ctl != nil {
+		snapshot = ctl.SnapshotRuntimeStats(windowSec, maxPoints)
+	} else {
+		activeTCPConnections := 0
+		snapshot = control.SnapshotRuntimeStats(activeTCPConnections, control.DefaultUdpEndpointPool.Count(), windowSec, maxPoints)
+	}
 
 	samples := make([]RuntimeTrafficSample, 0, len(snapshot.Samples))
 	for _, sample := range snapshot.Samples {
