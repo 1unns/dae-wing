@@ -29,6 +29,7 @@ type DeviceTraffic struct {
 type ConnTraffic struct {
 	SrcIP         string
 	DstIP         string
+	SrcPort       uint16
 	DstPort       uint16
 	UploadTotal   uint64
 	DownloadTotal uint64
@@ -89,6 +90,7 @@ func GetRuntimeOverview(windowSec int, maxPoints int) (*RuntimeOverview, error) 
 		connTraffics = append(connTraffics, ConnTraffic{
 			SrcIP:         ct.SrcIP,
 			DstIP:         ct.DstIP,
+			SrcPort:       ct.SrcPort,
 			DstPort:       ct.DstPort,
 			UploadTotal:   ct.UploadTotal,
 			DownloadTotal: ct.DownloadTotal,
