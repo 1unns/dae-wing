@@ -43,25 +43,11 @@ type RuntimeOverview {
   activeConnections: Int!
   udpSessions: Int!
   samples: [RuntimeTrafficSample!]!
-  deviceTraffics: [DeviceTraffic!]!
-  connTraffics: [ConnTraffic!]!
 }
 type RuntimeTrafficSample {
   timestamp: Time!
   uploadRate: Float!
   downloadRate: Float!
-}
-type DeviceTraffic {
-  ip: String!
-  uploadTotal: String!
-  downloadTotal: String!
-}
-type ConnTraffic {
-  srcIp: String!
-  dstIp: String!
-  dstPort: Int!
-  uploadTotal: String!
-  downloadTotal: String!
 }
 `, nil
 }
