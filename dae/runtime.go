@@ -59,7 +59,7 @@ func GetRuntimeOverview(windowSec int, maxPoints int) (*RuntimeOverview, error) 
 	// When ControlPlane is not yet initialized, fall back to the global store.
 	var snapshot control.RuntimeStatsSnapshot
 	if ctl != nil {
-		snapshot = ctl.SnapshotRuntimeStats(windowSec, maxPoints)
+		snapshot = control.SnapshotRuntimeStats(ctl.ActiveTCPConnections(), control.DefaultUdpEndpointPool.Count(), windowSec, maxPoints)
 	} else {
 		activeTCPConnections := 0
 		snapshot = control.SnapshotRuntimeStats(activeTCPConnections, control.DefaultUdpEndpointPool.Count(), windowSec, maxPoints)
@@ -74,28 +74,28 @@ func GetRuntimeOverview(windowSec int, maxPoints int) (*RuntimeOverview, error) 
 		})
 	}
 
-	deviceTraffics := make([]DeviceTraffic, 0, len(snapshot.DeviceTraffics))
-	for _, dt := range snapshot.DeviceTraffics {
-		deviceTraffics = append(deviceTraffics, DeviceTraffic{
-			IP:                  dt.IP,
-			ProxyUploadTotal:    dt.ProxyUploadTotal,
-			ProxyDownloadTotal:  dt.ProxyDownloadTotal,
-			DirectUploadTotal:   dt.DirectUploadTotal,
-			DirectDownloadTotal: dt.DirectDownloadTotal,
-		})
-	}
+	deviceTraffics := make([]DeviceTraffic, 0)
+	// for _, dt := range snapshot.DeviceTraffics {
+	// 	deviceTraffics = append(deviceTraffics, DeviceTraffic{
+	// 		IP:                  dt.IP,
+	// 		ProxyUploadTotal:    dt.ProxyUploadTotal,
+	// 		ProxyDownloadTotal:  dt.ProxyDownloadTotal,
+	// 		DirectUploadTotal:   dt.DirectUploadTotal,
+	// 		DirectDownloadTotal: dt.DirectDownloadTotal,
+	// 	})
+	// }
 
-	connTraffics := make([]ConnTraffic, 0, len(snapshot.ConnTraffics))
-	for _, ct := range snapshot.ConnTraffics {
-		connTraffics = append(connTraffics, ConnTraffic{
-			SrcIP:         ct.SrcIP,
-			DstIP:         ct.DstIP,
-			SrcPort:       ct.SrcPort,
-			DstPort:       ct.DstPort,
-			UploadTotal:   ct.UploadTotal,
-			DownloadTotal: ct.DownloadTotal,
-		})
-	}
+	connTraffics := make([]ConnTraffic, 0)
+	// for _, ct := range snapshot.ConnTraffics {
+	// 	connTraffics = append(connTraffics, ConnTraffic{
+	// 		SrcIP:         ct.SrcIP,
+	// 		DstIP:         ct.DstIP,
+	// 		SrcPort:       ct.SrcPort,
+	// 		DstPort:       ct.DstPort,
+	// 		UploadTotal:   ct.UploadTotal,
+	// 		DownloadTotal: ct.DownloadTotal,
+	// 	})
+	// }
 
 	return &RuntimeOverview{
 		UpdatedAt:         snapshot.UpdatedAt,

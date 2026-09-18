@@ -22,6 +22,7 @@ import (
 
 	"github.com/daeuniverse/dae-wing/graphql/service/subscription"
 	"github.com/daeuniverse/dae-wing/webrender"
+	"github.com/go-co-op/gocron"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/graph-gophers/graphql-go/relay"
 	"github.com/rs/cors"
@@ -83,6 +84,18 @@ var (
 			}
 
 			subscription.UpdateAll(context.TODO())
+
+			// Schedule traffic stats clear at 4 AM daily
+			trafficScheduler := gocron.NewScheduler(time.Local)
+			trafficScheduler.Every(1).Day().At("04:00").Do(func() {
+				if err := dae.ClearTrafficStats(); err != nil {
+					logrus.Errorf("Failed to clear traffic stats automatically: %v", err)
+				} else {
+					logrus.Infoln("Traffic stats automatically cleared at 4 AM")
+				}
+			})
+			trafficScheduler.StartAsync()
+
 
 			// Run dae.
 			var logOpts *lumberjack.Logger
